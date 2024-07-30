@@ -17,7 +17,7 @@ elif [[ $($PSQL "SELECT name FROM elements WHERE name = '$1'") ]]
 then
   NUMBER=$(echo $($PSQL "SELECT atomic_number FROM elements WHERE name = '$1'") | sed -E 's/^ *| *$//g')
 else
-  echo "new number"
+  echo "I could not find that element in the database."
 fi
 
   ELEMENT=$(echo $($PSQL "SELECT name FROM elements WHERE atomic_number = $NUMBER") | sed -E 's/^ *| *$//g')
