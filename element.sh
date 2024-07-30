@@ -7,13 +7,14 @@ then
   echo -e "\nPlease provide an element as an argument"
 fi
 
-NUMBER=$($PSQL "SELECT atomic_number FROM elements WHERE atomic_number = $1")
+NUMBER=$(echo $($PSQL "SELECT atomic_number FROM elements WHERE atomic_number = $1") | sed -E 's/^ *| *$//g')
 
 if [[ $NUMBER ]]
 then
-  ELEMENT=$($PSQL "SELECT name FROM elements WHERE atomic_number = $1")
-  SYMBOL=$($PSQL "SELECT symbol FROM elements WHERE atomic_number = $1")
-  echo -e "\nThe element with atomic number $NUMBER is $ELEMENT ($SYMBOL)"
+  ELEMENT=$(echo $($PSQL "SELECT name FROM elements WHERE atomic_number = $1") | sed -E 's/^ *| *$//g')
+  SYMBOL=$(echo $($PSQL "SELECT symbol FROM elements WHERE atomic_number = $1") | sed -E 's/^ *| *$//g')
+  TYPE=$(echo $($PSQL "SELECT type FROM types INNER JOIN properties USING(type_id) WHERE atomic_number = $NUMBER") | sed -E 's/^ *| *$//g')
+  echo -e "\nThe element with atomic number $NUMBER is $ELEMENT ($SYMBOL). It's a $TYPE"
 else
   echo "new number"
 fi
